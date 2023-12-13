@@ -25,16 +25,25 @@ fn main() {
 }
 
 fn solve(map: &Vec<Vec<char>>) -> i32 {
-    for j in 1..map[0].len() {
+    let n = map.len();
+    let m = map[0].len();
+
+    100 * count(map, n, m, false) + count(map, m, n, true)
+}
+
+fn count(map: &Vec<Vec<char>>, n: usize, m: usize, reverse: bool) -> i32 {
+    for i in 1..n {
         let mut count = 0;
 
-        for k in 0..j.min(map[0].len() - j) {
+        for k in 0..i.min(n - i) {
             if count > 1 {
                 break;
             }
 
-            for i in 0..map.len() {
-                if map[i][j - k - 1] != map[i][j + k] {
+            for j in 0..m {
+                if (!reverse && map[i - k - 1][j] != map[i + k][j])
+                    || (reverse && map[j][i - k - 1] != map[j][i + k])
+                {
                     count += 1;
                     if count > 1 {
                         break;
@@ -44,30 +53,7 @@ fn solve(map: &Vec<Vec<char>>) -> i32 {
         }
 
         if count == 1 {
-            return j as i32;
-        }
-    }
-
-    for i in 1..map.len() {
-        let mut count = 0;
-
-        for k in 0..i.min(map.len() - i) {
-            if count > 1 {
-                break;
-            }
-
-            for j in 0..map[0].len() {
-                if map[i - k - 1][j] != map[i + k][j] {
-                    count += 1;
-                    if count > 1 {
-                        break;
-                    }
-                }
-            }
-        }
-
-        if count == 1 {
-            return 100 * i as i32;
+            return i as i32;
         }
     }
 

@@ -6,53 +6,52 @@ fn main() {
     let reader = io::BufReader::new(file);
 
     let mut result = 0;
-    let mut m: Vec<Vec<char>> = vec![];
+    let mut map: Vec<Vec<char>> = vec![];
 
     for line in reader.lines() {
         if let Ok(line) = line {
             if !line.is_empty() {
-                m.push(line.chars().collect());
+                map.push(line.chars().collect());
             } else {
-                result += solve(&m);
-                m.clear();
+                result += solve(&map);
+                map.clear();
             }
         }
     }
 
-    result += solve(&m);
+    result += solve(&map);
 
     println!("{result}");
 }
 
-fn solve(m: &Vec<Vec<char>>) -> i32 {
-    for j in 1..m[0].len() {
+fn solve(map: &Vec<Vec<char>>) -> i32 {
+    let n = map.len();
+    let m = map[0].len();
+
+    100 * count(map, n, m, false) + count(map, m, n, true)
+}
+
+fn count(map: &Vec<Vec<char>>, n: usize, m: usize, reverse: bool) -> i32 {
+    for i in 1..n {
         let mut ok = true;
-        for k in 0..j.min(m[0].len() - j) {
+
+        for k in 0..i.min(n - i) {
             if !ok {
                 break;
             }
-            for i in 0..m.len() {
-                if m[i][j - k - 1] != m[i][j + k] {
+
+            for j in 0..m {
+                if (!reverse && map[i - k - 1][j] != map[i + k][j])
+                    || (reverse && map[j][i - k - 1] != map[j][i + k])
+                {
                     ok = false;
                     break;
                 }
             }
         }
-        if ok {
-            return j as i32;
-        }
-    }
 
-    for i in 1..m.len() {
-        let mut ok = true;
-        for k in 0..i.min(m.len() - i) {
-            if m[i - k - 1] != m[i + k] {
-                ok = false;
-                break;
-            }
-        }
         if ok {
-            return 100 * i as i32;
+            return i as i32;
         }
     }
 

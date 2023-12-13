@@ -52,5 +52,5 @@ fn main() {
         }
     }
 
-    println!("{}", result);
+    println!("{result}");
 }

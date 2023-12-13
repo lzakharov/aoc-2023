@@ -22,7 +22,7 @@ fn main() {
         result *= (max - min) as i64 + 1;
     }
 
-    println!("{}", result);
+    println!("{result}");
 }
 
 fn parse(line: &str) -> Vec<i64> {
